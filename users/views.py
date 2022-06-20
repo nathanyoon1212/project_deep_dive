@@ -1,11 +1,11 @@
 import requests, jwt
 
-from django.views import View
+from rest_framework.views import APIView
 from django.http  import JsonResponse
 from django.conf  import settings
 from users.models import User
 
-class KakaoLogInView(View):
+class KakaoLogInView(APIView):
     def post(self, request):
         try: 
             kakao_access_token  = request.headers.get('Authorization')
