@@ -8,18 +8,18 @@ from bookings.models      import Booking
 
 class PetsitterListView(View):
     def get(self, request):
-        sort_by      = request.GET.get('sort_by')
-        check_in     = request.GET.get('check_in', None)
-        check_out    = request.GET.get('check_out', None)
-        keyword      = request.GET.get('keyword', "")
-        type_id      = request.GET.get('type_id', None)
-        offset       = int(request.GET.get('offset', 0))
-        limit        = int(request.GET.get('limit', 10))
-        booked_list  = []
+        sort_by     = request.GET.get('sort_by')
+        check_in    = request.GET.get('check_in', None)
+        check_out   = request.GET.get('check_out', None)
+        keyword     = request.GET.get('keyword', "")
+        type_id     = request.GET.get('type_id', None)
+        offset      = int(request.GET.get('offset', 0))
+        limit       = int(request.GET.get('limit', 10))
+        booked_list = []
 
         sorting_options = {
-            "low_price"      : "price", 
-            "many_comments"  : "-comment_count"        
+            "low_price"     : "price", 
+            "many_comments" : "-comment_count"        
         }
 
         if check_in and check_out:
