@@ -1,8 +1,9 @@
 from datetime import timedelta, datetime
+from rest_framework.response import Response
 from django.http          import JsonResponse
 from django.db.models     import Q, Count
 from django.views         import View
-
+from .serializers         import PetsitterSerializer, PetsitterImageSerializer
 from petsitters.models    import Petsitter, Type, PetsitterImage, Comment
 from bookings.models      import Booking 
 
@@ -12,6 +13,7 @@ class PetsitterListView(View):
         check_in    = request.GET.get('check_in', None)
         check_out   = request.GET.get('check_out', None)
         keyword     = request.GET.get('keyword', "")
+        address     = request.GET.get('address', "")
         type_id     = request.GET.get('type_id', None)
         offset      = int(request.GET.get('offset', 0))
         limit       = int(request.GET.get('limit', 10))
@@ -37,7 +39,12 @@ class PetsitterListView(View):
             q &= Q(types__id = type_id)
 
         if keyword:
-            q &= Q(address__icontains = keyword)
+            q &= Q(information__icontains = keyword)
+
+        if address:
+            q &= Q(address__icontains = address)
+
+        
         
         petsitters = Petsitter.objects\
                               .exclude(booking__in=booked_list)\
