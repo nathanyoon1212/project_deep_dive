@@ -1,13 +1,14 @@
-from datetime import timedelta, datetime
-from rest_framework.response import Response
-from django.http          import JsonResponse
-from django.db.models     import Q, Count
-from django.views         import View
-from .serializers         import PetsitterSerializer, PetsitterImageSerializer
+from datetime   import timedelta, datetime
+from rest_framework.response     import Response
+from django.http                 import JsonResponse
+from django.db.models            import Q, Count
+from rest_framework.views        import APIView
+
+from petsitters.serializers      import PetsitterSerializer, PetsitterImageSerializer
 from petsitters.models    import Petsitter, Type, PetsitterImage, Comment
 from bookings.models      import Booking 
 
-class PetsitterListView(View):
+class PetsitterListView(APIView):
     def get(self, request):
         sort_by     = request.GET.get('sort_by')
         check_in    = request.GET.get('check_in', None)
@@ -20,7 +21,9 @@ class PetsitterListView(View):
         booked_list = []
 
         sorting_options = {
-            "low_price"     : "price", 
+            "low_price"     : "price",
+            "high_price"    : "-price",
+            "many_reviews"  : "-reviews",
             "many_comments" : "-comment_count"        
         }
 
@@ -48,7 +51,7 @@ class PetsitterListView(View):
         
         petsitters = Petsitter.objects\
                               .exclude(booking__in=booked_list)\
-                              .annotate(comment_count = Count('comment__id'))\
+                              .annotate(comment_count = Count('comment__id'), reviews = Count('review__id'))\
                               .filter(q)\
                               .order_by(sorting_options.get(sort_by, "id"))[offset : offset+limit]
 
@@ -65,8 +68,8 @@ class PetsitterListView(View):
         } for petsitter in petsitters]
         return JsonResponse({"results" : results}, status=200)
 
-class PetsitterDetailView(View):
-    def get(self, request, petsitter_id):
+class PetsitterDetailView(APIView):
+    def get(self, petsitter_id):
         try:
             petsitter = Petsitter.objects.get(id=petsitter_id)
 
@@ -91,3 +94,15 @@ class PetsitterDetailView(View):
         
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+
+class PetsitterRegisterView(APIView):
+    def post(self, request):
+        user = request.data.get("user_id")
+        if not user:
+            return Response({"detail" : "You need to join first!"}, status=400)
+        serializer = PetsitterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+

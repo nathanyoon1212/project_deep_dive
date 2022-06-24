@@ -1,3 +1,4 @@
+
 from django.db   import models
 
 from core.models import TimeStampModel
@@ -13,6 +14,7 @@ class Petsitter(TimeStampModel):
     longitude   = models.DecimalField(max_digits=9, decimal_places=6)
     latitude    = models.DecimalField(max_digits=9, decimal_places=6)
     types       = models.ManyToManyField('Type', through='PetsitterType')
+    user        = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True)
 
     class Meta:
         db_table = 'petsitters'
