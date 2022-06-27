@@ -25,6 +25,7 @@
   <table style="text-align:center;">
     <tr>
       <td>
+                << 윤진섭 >>
         - 펫시터 전체리스트 엔드포인트 구현<br>
         - 펫시터 상세페이지 엔드포인트 구현<br>
         - 담당 API Unit test 진행<br>
@@ -32,6 +33,7 @@
         - DB 모델링
       </td>
       <td>
+                << 최지수 >>
         - 소셜 로그인(카카오API)/데코레이터 구현<br>
         - 리뷰 엔드포인트 구현<br>
         - 담당 API Unit test 진행<br>
