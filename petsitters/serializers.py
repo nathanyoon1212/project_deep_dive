@@ -7,6 +7,12 @@ from .models import (Petsitter, PetsitterImage, PetsitterType,
 
 class PetsitterSerializer(ModelSerializer):
 
+    def create(self, request):
+        user = request.User
+        petsitter= Petsitter.objects.create(user = user.id)
+        petsitter.save()
+        return petsitter
+
     def update(self,instance, validated_data):
         instance.title       = validated_data.get("title", instance.title)
         instance.price       = validated_data.get("price", instance.price)
@@ -14,12 +20,12 @@ class PetsitterSerializer(ModelSerializer):
         instance.address     = validated_data.get("address", instance.address)
         instance.save()
 
-        class Meta:
-            model = Petsitter
-            fields = ["id", "name", "title", "price", "grade", "count", "information", "address"]
-            extra_kwargs = {
-                "id" : {"read_only" : True}
-            }
+    class Meta:
+        model = Petsitter
+        fields = ["id", "name", "title", "price", "grade", "count", "information", "address"]
+        extra_kwargs = {
+            "id" : {"read_only" : True}
+        }
             
 class PetsitterImageSerializer(ModelSerializer):
 
@@ -27,9 +33,9 @@ class PetsitterImageSerializer(ModelSerializer):
         instance.image_url = validated_data.get("image_url", instance.image_url)
         instance.save()
 
-        class Meta:
-            model = PetsitterImage
-            fields = ["id", "image_url"]
-            extra_kwarges = {
-                "id" : {"read_only" : True}
-            }
+    class Meta:
+        model = PetsitterImage
+        fields = ["id", "image_url"]
+        extra_kwarges = {
+            "id" : {"read_only" : True}
+        }
